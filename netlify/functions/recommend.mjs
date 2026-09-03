@@ -8,26 +8,10 @@ export default async (req) => {
 
     try {
         const body = await req.json();
-        const { score, dominantTrait, profile } = body;
+        const { assignedCourses, profile } = body;
 
-        // 1. STRICT DETERMINISTIC RULES (No AI Intervention Here)
-        // Mapped exactly to the provided "Course-fit hint" guidelines from the PDF
-        const courseGuidelines = {
-            A: ["Engineering", "Computer Science", "Analytics"],
-            B: ["Law", "Humanities", "Media", "Management"],
-            C: ["Design", "Architecture", "Creative Fields"],
-            D: ["People-focused courses", "HR", "Education", "Social Work"]
-        };
-
-        const assignedCourses = courseGuidelines[dominantTrait];
-        
-        let aptitudeFit = "Needs more exploration and guidance";
-        if (score >= 32) aptitudeFit = "Very strong aptitude fit";
-        else if (score >= 24) aptitudeFit = "Strong aptitude fit";
-        else if (score >= 16) aptitudeFit = "Moderate aptitude fit";
-
-        // 2. Fetch Live Search Data
-        const searchQuery = `Top colleges in ${profile.location} for ${assignedCourses.join(' and ')} 2026 admissions`;
+        // Fetch Live Search Data based ONLY on the hardcoded courses
+        const searchQuery = `Top colleges in ${profile.location} for ${assignedCourses.join(', ')} 2026 admissions`;
         const serpUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(searchQuery)}&api_key=${process.env.SERPAPI_KEY}`;
         
         let liveColleges = "Standard universities in the region.";
@@ -39,28 +23,27 @@ export default async (req) => {
             console.error("SerpApi fetch failed.");
         }
 
-        // 3. AI AS A STRICT COLLEGE FILTER & RANKER
+        // STRICT FILTER PROMPT
         const prompt = `
-        You are an AI college filtering system. 
-        The student has completed an assessment, and their exact courses have ALREADY been decided by the system.
+        You are a strict College Search and Filtering Database. Do NOT act as a career counselor. Do NOT evaluate if the courses fit the student. 
         
-        DETERMINED COURSES (DO NOT CHANGE THESE):
+        The system has ALREADY assigned these courses to the student:
         ${assignedCourses.join(', ')}
         
-        STUDENT PROFILE FILTER:
-        - 12th Stream: ${profile.stream}
+        Student Filter Criteria:
         - 12th Marks: ${profile.marks}%
-        - Preferred Location: ${profile.location}
-        - Budget Preference: ${profile.budget}
-        - Search Data Context: ${liveColleges}
+        - Location: ${profile.location}
+        - Budget: ${profile.budget}
+        - 12th Stream: ${profile.stream}
+        - Web Search Context: ${liveColleges}
 
         INSTRUCTIONS:
-        Write a clean HTML report using <h2>, <h3>, <ul>, <li>, <p>. Do NOT output markdown code blocks (\`\`\`html).
-        
-        Structure the output EXACTLY like this:
-        1. "Assessment Summary": State their aptitude fit (${aptitudeFit}, Score: ${score}/40) and state the determined courses.
-        2. "College Rankings": For EACH of the determined courses, list 3 specific colleges that best match the student's Profile Filter (Stream, Marks, Location, Budget). Use the Search Data to help rank them. Explain briefly why each college fits their specific filter.
-        Do not suggest alternative career paths. Stick strictly to the determined courses.`;
+        1. Format your response in simple HTML (using <h2>, <h3>, <ul>, <li>). Do NOT use markdown formatting like \`\`\`html.
+        2. Create a section called "<h2>2. Filtered College Matches</h2>".
+        3. For EVERY SINGLE COURSE listed above, you MUST list exactly 3 specific colleges.
+        4. Use the Student Filter Criteria to rank and select the colleges (e.g., if budget is "Economical", prioritize government colleges; if location is "Mumbai", only show Mumbai colleges).
+        5. Add a one-sentence bullet point under each college explaining why it passed the filter (mentioning marks, budget, or location).
+        `;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
