@@ -8,68 +8,65 @@ export default async (req) => {
 
     try {
         const body = await req.json();
-        const { score, dominantTrait, stream, isConflicted } = body;
+        const { score, dominantTrait, profile } = body;
 
-        let courseHint = "";
-        if (dominantTrait === "A") courseHint = "Engineering, computer science, data analytics";
-        else if (dominantTrait === "B") courseHint = "Law, humanities, media, business management";
-        else if (dominantTrait === "C") courseHint = "Design, architecture, creative and visual fields";
-        else if (dominantTrait === "D") courseHint = "Psychology, HR, education, social work";
+        // 1. STRICT DETERMINISTIC RULES (No AI Intervention Here)
+        // Mapped exactly to the provided "Course-fit hint" guidelines from the PDF
+        const courseGuidelines = {
+            A: ["Engineering", "Computer Science", "Analytics"],
+            B: ["Law", "Humanities", "Media", "Management"],
+            C: ["Design", "Architecture", "Creative Fields"],
+            D: ["People-focused courses", "HR", "Education", "Social Work"]
+        };
 
-        // Fetch Live College Data via SerpApi
-        const searchQuery = `Top colleges in India for ${courseHint} 2026 admissions`;
-        const serpUrl = `[https://serpapi.com/search.json?engine=google&q=$](https://serpapi.com/search.json?engine=google&q=$){encodeURIComponent(searchQuery)}&api_key=${process.env.SERPAPI_KEY}`;
+        const assignedCourses = courseGuidelines[dominantTrait];
         
-        let liveColleges = "Standard top-tier universities.";
+        let aptitudeFit = "Needs more exploration and guidance";
+        if (score >= 32) aptitudeFit = "Very strong aptitude fit";
+        else if (score >= 24) aptitudeFit = "Strong aptitude fit";
+        else if (score >= 16) aptitudeFit = "Moderate aptitude fit";
+
+        // 2. Fetch Live Search Data
+        const searchQuery = `Top colleges in ${profile.location} for ${assignedCourses.join(' and ')} 2026 admissions`;
+        const serpUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(searchQuery)}&api_key=${process.env.SERPAPI_KEY}`;
+        
+        let liveColleges = "Standard universities in the region.";
         try {
             const serpRes = await fetch(serpUrl);
             const serpData = await serpRes.json();
-            liveColleges = serpData.organic_results?.slice(0, 4).map(r => `${r.title}`).join(', ') || liveColleges;
+            liveColleges = serpData.organic_results?.slice(0, 5).map(r => `${r.title} - ${r.snippet}`).join(' | ') || liveColleges;
         } catch (e) {
-            console.error("SerpApi fetch failed, falling back to LLM knowledge.");
+            console.error("SerpApi fetch failed.");
         }
 
-        // FIX: Removed the raw backticks from this string to prevent the build syntax error
-        const styleInstructions = `Format the output in clean, semantic HTML (using <h2>, <h3>, <ul>, <li>, <p>, <strong>). Do NOT wrap the response in markdown html blocks or include <html>, <head>, or <body> tags.`;
-
-        let prompt = "";
+        // 3. AI AS A STRICT COLLEGE FILTER & RANKER
+        const prompt = `
+        You are an AI college filtering system. 
+        The student has completed an assessment, and their exact courses have ALREADY been decided by the system.
         
-        if (isConflicted) {
-            prompt = `
-            You are an expert career counselor for Indian students. 
-            Student Profile (Anonymized): 12th Stream: ${stream}.
-            
-            EDGE CASE ALERT: This student's test results show highly mixed and conflicting interests. They are a "multi-potentialite".
-            Recent Search Data context: ${liveColleges}.
-            
-            Write a clear, empathetic career roadmap. Include:
-            1. An encouraging summary acknowledging their diverse interests as a strength.
-            2. Suggest 3 interdisciplinary courses (e.g., B.Tech + MBA, Liberal Arts, UI/UX).
-            3. CRITICAL: For EVERY SINGLE COURSE you suggest, provide a sub-list of EXACTLY 3 recommended colleges in India that offer it and accept students from the ${stream} stream.
-            
-            ${styleInstructions}`;
-        } else {
-            prompt = `
-            You are an expert career counselor for Indian students. 
-            Student Profile (Anonymized): 12th Stream: ${stream}.
-            Aptitude Score: ${score}/40. 
-            Recommended Fields based on test: ${courseHint}.
-            Recent Search Data context: ${liveColleges}.
+        DETERMINED COURSES (DO NOT CHANGE THESE):
+        ${assignedCourses.join(', ')}
+        
+        STUDENT PROFILE FILTER:
+        - 12th Stream: ${profile.stream}
+        - 12th Marks: ${profile.marks}%
+        - Preferred Location: ${profile.location}
+        - Budget Preference: ${profile.budget}
+        - Search Data Context: ${liveColleges}
 
-            Write a clear, structured career roadmap. Include:
-            1. A brief summary of their aptitude fit.
-            2. Top 3 recommended courses specifically tailored for a ${stream} student entering the ${courseHint} field.
-            3. CRITICAL: For EVERY SINGLE COURSE you suggest, provide a sub-list of EXACTLY 3 highly-rated colleges/universities in India that offer that specific course. Base this on the student's profile and the search data provided.
-            
-            ${styleInstructions}`;
-        }
+        INSTRUCTIONS:
+        Write a clean HTML report using <h2>, <h3>, <ul>, <li>, <p>. Do NOT output markdown code blocks (\`\`\`html).
+        
+        Structure the output EXACTLY like this:
+        1. "Assessment Summary": State their aptitude fit (${aptitudeFit}, Score: ${score}/40) and state the determined courses.
+        2. "College Rankings": For EACH of the determined courses, list 3 specific colleges that best match the student's Profile Filter (Stream, Marks, Location, Budget). Use the Search Data to help rank them. Explain briefly why each college fits their specific filter.
+        Do not suggest alternative career paths. Stick strictly to the determined courses.`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
         });
 
-        // Strip markdown code blocks if the LLM accidentally includes them
         let cleanHtml = response.text.replace(/```html/g, '').replace(/```/g, '').trim();
 
         return new Response(JSON.stringify({ html: cleanHtml }), {
