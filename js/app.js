@@ -88,7 +88,7 @@ async function finishTest() {
             <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-700 mx-auto mb-4"></div>
             <p class="text-gray-600 font-medium animate-pulse">AI is filtering colleges for these exact courses based on your budget, location, and marks...</p>
         </div>
-        <div id="ai-colleges-container"></div>
+       <div id="ai-colleges-container" class="prose max-w-none text-gray-700 mt-6"></div>
     `;
 
     // 3. SEND ONLY THE CHOSEN COURSES AND PROFILE TO THE AI FILTER
