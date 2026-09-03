@@ -18,7 +18,7 @@ export default async (req) => {
 
         // Fetch Live College Data via SerpApi
         const searchQuery = `Top colleges in India for ${courseHint} 2026 admissions`;
-        const serpUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(searchQuery)}&api_key=${process.env.SERPAPI_KEY}`;
+        const serpUrl = `[https://serpapi.com/search.json?engine=google&q=$](https://serpapi.com/search.json?engine=google&q=$){encodeURIComponent(searchQuery)}&api_key=${process.env.SERPAPI_KEY}`;
         
         let liveColleges = "Standard top-tier universities.";
         try {
@@ -29,8 +29,8 @@ export default async (req) => {
             console.error("SerpApi fetch failed, falling back to LLM knowledge.");
         }
 
-        // Base instructions for styling
-        const styleInstructions = `Format the output in clean, semantic HTML (using <h2>, <h3>, <ul>, <li>, <p>, <strong>). Do NOT wrap the response in ```html blocks or include <html>, <head>, or <body> tags.`;
+        // FIX: Removed the raw backticks from this string to prevent the build syntax error
+        const styleInstructions = `Format the output in clean, semantic HTML (using <h2>, <h3>, <ul>, <li>, <p>, <strong>). Do NOT wrap the response in markdown html blocks or include <html>, <head>, or <body> tags.`;
 
         let prompt = "";
         
