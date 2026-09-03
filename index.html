@@ -12,20 +12,30 @@
         <p class="text-center text-gray-500 mb-8">No personal data stored. Real-time insights powered by AI.</p>
         
         <div id="app-container">
-            <!-- Step 1: Profile -->
+            <!-- Step 1: Detailed Profile -->
             <div id="step-profile" class="space-y-4">
-                <h2 class="text-xl font-semibold">1. Select Your Background</h2>
-                <select id="stream" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select your 12th Stream...</option>
-                    <option value="PCM">Science (PCM)</option>
-                    <option value="PCB">Science (PCB)</option>
-                    <option value="Commerce">Commerce</option>
-                    <option value="Arts">Arts/Humanities</option>
-                </select>
+                <h2 class="text-xl font-semibold">1. Student Profile</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <select id="stream" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Select your 12th Stream...</option>
+                        <option value="PCM">Science (PCM)</option>
+                        <option value="PCB">Science (PCB)</option>
+                        <option value="Commerce">Commerce</option>
+                        <option value="Arts">Arts/Humanities</option>
+                    </select>
+                    <input type="number" id="marks" placeholder="Expected 12th Marks (%)" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required max="100">
+                    <input type="text" id="location" placeholder="Preferred Location (e.g., Delhi, Mumbai, South India)" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                    <select id="budget" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Select Budget Preference...</option>
+                        <option value="Economical (Govt/Aided)">Economical (Govt/Aided)</option>
+                        <option value="Moderate (Private/State)">Moderate (Private/State)</option>
+                        <option value="Premium (Top Private/Deemed)">Premium (Top Private/Deemed)</option>
+                    </select>
+                </div>
                 <button onclick="startTest()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-bold transition">Start Aptitude Test</button>
             </div>
 
-            <!-- Step 2: Test -->
+            <!-- Step 2: Test UI (Remains unchanged) -->
             <div id="step-test" class="hidden space-y-6">
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
                     <h2 class="text-xl font-semibold">Aptitude Assessment</h2>
@@ -39,7 +49,7 @@
             <div id="step-results" class="hidden space-y-4">
                 <div id="loading" class="text-center py-10 hidden">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold animate-pulse text-blue-800">Analyzing profile & generating custom roadmap...</p>
+                    <p class="text-lg font-semibold animate-pulse text-blue-800">Filtering colleges based on your profile & test scores...</p>
                 </div>
                 <div id="report-content" class="prose max-w-none text-gray-700"></div>
                 <div class="mt-6 flex gap-4">
