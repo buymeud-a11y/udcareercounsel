@@ -193,40 +193,4 @@ function startTest() {
         document.getElementById('ai-colleges-container').innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded-lg">Error connecting to the AI college database.</div>`;
         document.getElementById('reset-btn').classList.remove('hidden');
     }
-}            <p class="mb-1"><strong>Score:</strong> ${score}/40 (${aptitudeFit})</p>
-            <p class="mb-3"><strong>Determined Courses:</strong> Based strictly on your aptitude test, your recommended fields are:</p>
-            <ul class="list-disc pl-5 font-semibold text-lg text-blue-900">
-                ${assignedCourses.map(c => `<li>${c}</li>`).join('')}
-            </ul>
-        </div>
-        <div id="ai-status" class="text-center py-6">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-700 mx-auto mb-4"></div>
-            <p class="text-gray-600 font-medium animate-pulse">AI is filtering colleges for these exact courses based on your budget, location, and marks...</p>
-        </div>
-       <div id="ai-colleges-container" class="prose max-w-none text-gray-700 mt-6"></div>
-    `;
-
-    // 3. SEND ONLY THE CHOSEN COURSES AND PROFILE TO THE AI FILTER
-    try {
-        const res = await fetch('/.netlify/functions/recommend', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ assignedCourses, profile: userProfile })
-        });
-        
-        if (!res.ok) throw new Error("API responded with an error");
-        
-        const data = await res.json();
-        
-        document.getElementById('ai-status').classList.add('hidden');
-        document.getElementById('ai-colleges-container').innerHTML = data.html;
-        
-        document.getElementById('print-btn').classList.remove('hidden');
-        document.getElementById('reset-btn').classList.remove('hidden');
-    } catch (err) {
-        console.error(err);
-        document.getElementById('ai-status').classList.add('hidden');
-        document.getElementById('ai-colleges-container').innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded-lg">Error filtering colleges.</div>`;
-        document.getElementById('reset-btn').classList.remove('hidden');
-    }
 }
