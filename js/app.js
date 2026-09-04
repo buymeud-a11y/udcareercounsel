@@ -26,7 +26,7 @@ const questions = [
     { q: "Statement: All science students study biology or physics. Some biology students also study chemistry.", options: { A: " All science students study chemistry", B: "Some biology students may study chemistry", C: "No science student studies biology", D: "All chemistry students are science students" }, answer: "B" },
     { q: "A seating arrangement question: Five students sit in a row. A is to the left of B, B is to the left of C. Who is in the middle?", options: { A: "A", B: "B", C: "C", D: "Cannot be determined" }, answer: "B" },
     { q: "A student’s marks in five subjects are: 70, 75, 80, 85, and 90. What is the total?", options: { A: "390", B: "400", C: "405", D: "410" }, answer: "C" },
-    { q: "In a class, 40% of students like science, 30% like commerce, and the rest like arts. If there are 50 students, how many like arts?", options: { A: 10", B: "15", C: "20", D: "25" }, answer: "C" },
+    { q: "In a class, 40% of students like science, 30% like commerce, and the rest like arts. If there are 50 students, how many like arts?", options: { A: "10", B: "15", C: "20", D: "25" }, answer: "C" },
     { q: "A company sold 200 units in January, 240 in February, and 300 in March. What was the percentage increase from January to March?", options: { A: "20%", B: "30%", C: "40%", D: "50%" }, answer: "C" },
     { q: "If a bar chart shows sales of A, B, C, and D as 40, 50, 60, and 70 respectively, what is the average sales value?", options: { A: "50", B: "55", C: "60", D: "65" }, answer: "B" },
     { q: "Which activity do you enjoy most?", options: { A: "Solving number problems", B: "Reading and writing", C: "Drawing and creating visuals", D: "Organizing people and tasks" }, answer: "A" },
