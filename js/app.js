@@ -85,7 +85,28 @@ function startTest() {
         return alert("Please fill out all profile fields to continue.");
     }
 
-    function selectOption(selectedKey) {
+    userProfile = { stream, marks, location, budget };
+
+    document.getElementById('step-profile').classList.add('hidden');
+    document.getElementById('step-test').classList.remove('hidden');
+    renderQuestion();
+}
+
+function renderQuestion() {
+    if (currentQuestion >= questions.length) return finishTest();
+    
+    const qData = questions[currentQuestion];
+    document.getElementById('question-tracker').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
+    document.getElementById('question-container').innerText = qData.q;
+    
+    const optionsHtml = Object.entries(qData.options).map(([key, text]) => 
+        `<button onclick="selectOption('${key}')" class="text-left p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition bg-white shadow-sm">${key}. ${text}</button>`
+    ).join('');
+    
+    document.getElementById('options-container').innerHTML = optionsHtml;
+}
+
+function selectOption(selectedKey) {
     const correctKey = questions[currentQuestion].answer;
     
     if (selectedKey === correctKey) {
@@ -94,7 +115,23 @@ function startTest() {
         if (currentQuestion >= 0 && currentQuestion <= 9) {
             sectionScores.numerical++;
         } else if (currentQuestion >= 10 && currentQuestion <= 17) {
-           async function finishTest() {
+            sectionScores.verbal++;
+        } else if (currentQuestion >= 18 && currentQuestion <= 25) {
+            sectionScores.logical++;
+        } else if (currentQuestion >= 26 && currentQuestion <= 29) {
+            sectionScores.spatial++;
+        } else if (currentQuestion >= 30 && currentQuestion <= 39) {
+            sectionScores.interest++;
+        }
+    }
+    
+    answerCounts[selectedKey]++; 
+    
+    currentQuestion++;
+    renderQuestion();
+}
+
+async function finishTest() {
     document.getElementById('step-test').classList.add('hidden');
     document.getElementById('step-results').classList.remove('hidden');
     
