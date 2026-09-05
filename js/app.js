@@ -17,7 +17,7 @@ const questions = [
     { q: "Read the passage and answer:“Many students choose a course only because their friends selected it. However, a better decision is based on personal interest, aptitude, and future goals.”What is the main idea of the passage?", options: { A: "Friends should always choose the same course ", B: " Course selection should depend on personal suitability", C: " Future goals do not matter", D: "Aptitude tests are unnecessary" }, answer: "B" },
     { q: "Choose the Odd one out:", options: { A: "Novel", B: "Essay", C: "Poem", D: "Chapter" }, answer: "D" },
     { q: "Choose the sentence with correct punctuation.", options: { A: "However the result was delay", B: "However, the result was delayed.", C: "However the result, was delayed.", D: "However; the result was delayed" }, answer: "B" },
-    { q: "Which number does not belong?"121","144","169","196","225","250":", options: { A: "121", B: "196", C: "225", D: "250" }, answer: "D" },
+    { q: "Which number does not belong?121,144,169,196,225,250:", options: { A: "121", B: "196", C: "225", D: "250" }, answer: "D" },
     { q: "If all pens are stationery and some stationery items are blue, which statement must be true?", options: { A: "All pens are blue", B: " Some stationery items may be blue", C: "No pens are blue", D: "All blue items are pens" }, answer: "B" },
     { q: "In a code where A=1, B=2,....Z=26, what is the value of CAT?", options: { A: "21", B: "22", C: " 24", D: "26" }, answer: "C" },
     { q: "A man walks 5 km north, then 3 km east, then 5 km south. How far is he from the starting point?", options: { A: "2", B: "3", C: "5", D: "8" }, answer: "A" },
