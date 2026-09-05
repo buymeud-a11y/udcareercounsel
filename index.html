@@ -3,62 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Career Counseling</title>
+    <title>CareerPath AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090B14',
+                        cardBg: '#121626',
+                        accentPurple: '#7C3AED',
+                        accentCyan: '#06B6D4',
+                        textMuted: '#9CA3AF'
+                    },
+                    boxShadow: {
+                        'neon': '0 0 20px rgba(124, 58, 237, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #090B14; color: white; font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
-    <div class="max-w-4xl mx-auto p-6 mt-10 bg-white shadow-xl rounded-2xl">
-        <h1 class="text-3xl font-bold text-center text-blue-700 mb-2">Privacy-First AI Career Counseling</h1>
-        <p class="text-center text-gray-500 mb-8">No personal data stored. Real-time insights powered by AI.</p>
-        
-        <div id="app-container">
-            <!-- Step 1: Detailed Profile -->
-            <div id="step-profile" class="space-y-4">
-                <h2 class="text-xl font-semibold">1. Student Profile</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <select id="stream" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                        <option value="">Select your 12th Stream...</option>
-                        <option value="PCM">Science (PCM)</option>
-                        <option value="PCB">Science (PCB)</option>
-                        <option value="Commerce">Commerce</option>
-                        <option value="Arts">Arts/Humanities</option>
-                    </select>
-                    <input type="number" id="marks" placeholder="Expected 12th Marks (%)" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required max="100">
-                    <input type="text" id="location" placeholder="Preferred Location (e.g., Delhi, Mumbai, South India)" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                    <select id="budget" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                        <option value="">Select Budget Preference...</option>
-                        <option value="Economical (Govt/Aided)">Economical (Govt/Aided)</option>
-                        <option value="Moderate (Private/State)">Moderate (Private/State)</option>
-                        <option value="Premium (Top Private/Deemed)">Premium (Top Private/Deemed)</option>
-                    </select>
-                </div>
-                <button onclick="startTest()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-bold transition">Start Aptitude Test</button>
-            </div>
+<body class="min-h-screen">
 
-            <!-- Step 2: Test UI (Remains unchanged) -->
-            <div id="step-test" class="hidden space-y-6">
-                <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <h2 class="text-xl font-semibold">Aptitude Assessment</h2>
-                    <span id="question-tracker" class="text-sm font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-full"></span>
-                </div>
-                <div id="question-container" class="p-6 bg-blue-50 rounded-xl text-lg font-medium shadow-inner"></div>
-                <div id="options-container" class="grid grid-cols-1 gap-3"></div>
-            </div>
-
-            <!-- Step 3: Results -->
-            <div id="step-results" class="hidden space-y-4">
-                <div id="loading" class="text-center py-10 hidden">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto mb-4"></div>
-                    <p class="text-lg font-semibold animate-pulse text-blue-800">Filtering colleges based on your profile & test scores...</p>
-                </div>
-                <div id="report-content" class="prose max-w-none text-gray-700"></div>
-                <div class="mt-6 flex gap-4">
-                    <button onclick="window.print()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg hidden shadow" id="print-btn">Print / Download PDF</button>
-                    <button onclick="location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hidden" id="reset-btn">Start Over</button>
-                </div>
+    <!-- Top Navigation -->
+    <header class="flex justify-between items-center p-6 max-w-6xl mx-auto border-b border-gray-800">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center font-bold text-xl">🎯</div>
+            <div>
+                <h1 class="text-xl font-bold tracking-wide">CareerPath AI</h1>
+                <p class="text-xs text-textMuted uppercase tracking-wider">Privacy-First Counseling</p>
             </div>
         </div>
-    </div>
-    <script src="/js/app.js"></script>
+        <nav class="flex space-x-2 bg-cardBg p-1 rounded-full border border-gray-800">
+            <button class="px-6 py-2 bg-accentPurple rounded-full text-sm font-semibold shadow-neon">Profile</button>
+            <button class="px-6 py-2 text-textMuted rounded-full text-sm font-semibold">Aptitude Test</button>
+            <button class="px-6 py-2 text-textMuted rounded-full text-sm font-semibold">Results</button>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto mt-12 p-6" id="app-container">
+        
+        <!-- STEP 1: PROFILE / HOME PAGE -->
+        <div id="step-profile">
+            <!-- Hero Section -->
+            <div class="text-center mb-16">
+                <span class="px-4 py-1 border border-gray-700 rounded-full text-xs font-semibold tracking-widest text-gray-300 mb-6 inline-block bg-cardBg">
+                    🔒 NO PERSONAL DATA STORED • REAL-TIME AI INSIGHTS
+                </span>
+                <h2 class="text-5xl font-extrabold mb-6">Unlock Your <span class="text-accentPurple">Ideal</span> <span class="text-accentCyan">Career Path</span></h2>
+                <p class="text-textMuted text-lg max-w-2xl mx-auto">A comprehensive 40-question aptitude & interest assessment that matches you to the right course and top-rated colleges in your area.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-3 gap-4 mb-12">
+                <div class="bg-cardBg p-6 rounded-2xl border border-gray-800 text-center">
+                    <div class="text-2xl mb-2">🎓</div>
+                    <h3 class="text-accentCyan text-xl font-bold">10</h3>
+                    <p class="text-xs text-textMuted mt-1">Career Tracks Analysed</p>
+                </div>
+                <div class="bg-cardBg p-6 rounded-2xl border border-gray-800 text-center">
+                    <div class="text-2xl mb-2">🏛️</div>
+                    <h3 class="text-accentCyan text-xl font-bold">Top Rated</h3>
+                    <p class="text-xs text-textMuted mt-1">Colleges in Your Area</p>
+                </div>
+                <div class="bg-cardBg p-6 rounded-2xl border border-gray-800 text-center">
+                    <div class="text-2xl mb-2">⚡</div>
+                    <h3 class="text-accentCyan text-xl font-bold">40 Qs</h3>
+                    <p class="text-xs text-textMuted mt-1">Num • Verbal • Spatial • Logic</p>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="bg-cardBg p-8 rounded-2xl border border-gray-800">
+                <div class="flex items-center space-x-4 mb-8 border-b border-gray-800 pb-6">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold">Your Student Profile</h3>
+                        <p class="text-sm text-textMuted">Helps us filter the most relevant colleges</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <label class="block text-xs font-bold text-accentPurple mb-2 uppercase tracking-wider">Stream / Background</label>
+                        <select id="stream" class="w-full bg-[#090B14] border border-gray-700 rounded-lg p-3 text-white focus:border-accentPurple focus:outline-none">
+                            <option value="Science (PCM)">Science (PCM)</option>
+                            <option value="Science (PCB)">Science (PCB)</option>
+                            <option value="Commerce">Commerce</option>
+                            <option value="Arts/Humanities">Arts/Humanities</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-accentPurple mb-2 uppercase tracking-wider">Class 12 % / Marks</label>
+                        <input type="number" id="marks" placeholder="e.g. 78" class="w-full bg-[#090B14] border border-gray-700 rounded-lg p-3 text-white focus:border-accentPurple focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-accentPurple mb-2 uppercase tracking-wider">City / State</label>
+                        <input type="text" id="location" placeholder="e.g. Ahmedabad, Gujarat" class="w-full bg-[#090B14] border border-gray-700 rounded-lg p-3 text-white focus:border-accentPurple focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-accentPurple mb-2 uppercase tracking-wider">Family Budget</label>
+                        <select id="budget" class="w-full bg-[#090B14] border border-gray-700 rounded-lg p-3 text-white focus:border-accentPurple focus:outline-none">
+                            <option value="Economical (Govt/Aided)">Moderate (Private/State)</option>
+                            <option value="Premium (Private)">Premium (Private)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="startTest()" class="w-full bg-accentPurple text-white font-bold py-4 rounded-xl shadow-neon transition hover:bg-purple-600">
+                    Begin Aptitude Test — 40 Questions →
+                </button>
+            </div>
+        </div>
+
+        <!-- Hidden Steps for JS Injection -->
+        <div id="step-test" class="hidden">
+            <!-- JS will inject dark mode test here -->
+        </div>
+        <div id="step-results" class="hidden">
+            <div id="report-content"></div>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
 </body>
 </html>
